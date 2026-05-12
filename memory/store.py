@@ -165,13 +165,13 @@ class MemoryStore:
                 )]
             )
 
-        results = self.client.query_points(
+        results = self.client.search(
             collection_name=self.collection_name,
             query_vector=query_embedding,
             limit=top_k * 2,             # fetch extra, filter below threshold
             score_threshold=score_threshold,
             with_payload=True,
-        ).points
+        )
 
 
         memories = []
