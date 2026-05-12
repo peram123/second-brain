@@ -76,8 +76,8 @@ def get_rag_pipeline(_store):
     return SecondBrainRAG(
         memory_store=_store,
         embedding_model=os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"),
-        llm_provider=os.getenv("LLM_PROVIDER", "anthropic"),
-        llm_model=os.getenv("LLM_MODEL", "claude-sonnet-4-20250514"),
+        llm_provider=os.getenv("LLM_PROVIDER", "groq"),
+        llm_model=os.getenv("LLM_MODEL", "llama3-70b-8192"),
         persona_name=st.session_state.get("persona_name", "the user"),
         top_k=int(os.getenv("TOP_K_MEMORIES", "5")),
         similarity_threshold=float(os.getenv("SIMILARITY_THRESHOLD", "0.35")),
@@ -95,7 +95,7 @@ if "persona_name" not in st.session_state:
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 🧠 Second Brain")
+    st.markdown("## Second Brain")
     st.markdown("*Your Personal Language Model*")
     st.divider()
 
@@ -107,7 +107,7 @@ with st.sidebar:
     st.divider()
 
     # Memory upload section
-    st.markdown("### 📥 Add Memories")
+    st.markdown("### Add Memories")
     uploaded_files = st.file_uploader(
         "Upload documents",
         type=["pdf", "txt", "md", "docx"],
@@ -119,7 +119,7 @@ with st.sidebar:
 
     text_input = st.text_area("Or type a note", placeholder="Add any text to your memory...", height=100)
 
-    if st.button("💾 Save to Memory", use_container_width=True):
+    if st.button("Save to Memory", use_container_width=True):
         with st.spinner("Processing and embedding..."):
             try:
                 store = get_memory_store()
@@ -163,7 +163,7 @@ with st.sidebar:
     st.divider()
 
     # Memory stats
-    st.markdown("### 📊 Memory Stats")
+    st.markdown("### Memory Stats")
     try:
         store = get_memory_store()
         total = store.count()
@@ -178,14 +178,14 @@ with st.sidebar:
         st.caption(f"Store not ready: {e}")
 
     st.divider()
-    st.caption("🔒 Privacy-first: memories stored locally in Qdrant.\nOnly queries sent to LLM API.")
+    st.caption(" Privacy-first: memories stored locally in Qdrant.\nOnly queries sent to LLM API.")
 
 
 # ── Main chat area ────────────────────────────────────────────────────────────
 col_chat, col_memory = st.columns([3, 2])
 
 with col_chat:
-    st.markdown("## 💬 Ask Your Second Brain")
+    st.markdown("##  Ask Your Second Brain")
 
     # Chat history
     for msg in st.session_state.messages:
@@ -233,7 +233,7 @@ with col_chat:
 
 # ── Memory Transparency Panel ─────────────────────────────────────────────────
 with col_memory:
-    st.markdown("## 🔍 Memory Transparency")
+    st.markdown("## Memory Transparency")
     st.caption("See exactly which memories influenced the last answer")
 
     if st.session_state.last_response:
@@ -285,13 +285,14 @@ with col_memory:
 """, unsafe_allow_html=True)
 
         # Example questions
-        st.markdown("### 💡 Try asking:")
+        st.markdown("### Try asking:")
         examples = [
             "What are my career goals?",
             "What projects have I worked on?",
             "What do I know about machine learning?",
             "What are my skills and experience?",
             "What have I written about recently?",
+
         ]
         for ex in examples:
             if st.button(ex, use_container_width=True, key=ex):

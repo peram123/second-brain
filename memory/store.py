@@ -165,14 +165,14 @@ class MemoryStore:
                 )]
             )
 
-        results = self.client.search(
+        results = self.client.query_points(
             collection_name=self.collection_name,
             query_vector=query_embedding,
             limit=top_k * 2,             # fetch extra, filter below threshold
             score_threshold=score_threshold,
-            query_filter=search_filter,
             with_payload=True,
-        )
+        ).points
+
 
         memories = []
         now = datetime.now(timezone.utc)
